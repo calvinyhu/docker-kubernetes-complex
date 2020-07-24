@@ -1,0 +1,23 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_PASSWORD: password
+  redis:
+    image: redis:6-alpine
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    environment:
+      REDIS_HOST: a
+      REDIS_PORT: a
+      PG_USER: a
+      PG_HOST: a
+      PG_DATABASE: a
+      PG_PASSWORD: a
+      PG_PORT: a
+    volumes:
+      - /app/node_modules
+      - ./server:/app
