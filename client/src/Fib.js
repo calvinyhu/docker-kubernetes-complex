@@ -10,17 +10,21 @@ const initialState = {
 const Fib = () => {
   const [{ index, seenIndexes, values }, setState] = useState(initialState);
 
-  const fetchValues = async () => {
-    const values = await axios.get('/api/values/current');
-    setState((state) => ({ ...state, values: values.data }));
-  };
-  useEffect(fetchValues, []);
+  useEffect(() => {
+    const fetchValues = async () => {
+      const values = await axios.get('/api/values/current');
+      setState((state) => ({ ...state, values: values.data }));
+    };
+    fetchValues();
+  }, []);
 
-  const fetchIndexes = async () => {
-    const seenIndexes = await axios.get('/api/values/all');
-    setState((state) => ({ ...state, seenIndexes: seenIndexes.data }));
-  };
-  useEffect(fetchIndexes, []);
+  useEffect(() => {
+    const fetchIndexes = async () => {
+      const seenIndexes = await axios.get('/api/values/all');
+      setState((state) => ({ ...state, seenIndexes: seenIndexes.data }));
+    };
+    fetchIndexes();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
