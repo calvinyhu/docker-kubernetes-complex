@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const initialState = {
-  seenIndexes: [],
-  values: {},
-  index: '',
-};
-
 const Fib = () => {
-  const [{ index, seenIndexes, values }, setState] = useState(initialState);
+  const [index, setIndex] = useState('');
+  const [seenIndexes, setSeenIndexes] = useState([]);
+  const [values, setValues] = useState({});
 
   useEffect(() => {
     const fetchValues = async () => {
       const values = await axios.get('/api/values/current');
-      setState((state) => ({ ...state, values: values.data }));
+      setValues(values.data);
     };
     fetchValues();
   }, []);
@@ -21,7 +17,7 @@ const Fib = () => {
   useEffect(() => {
     const fetchIndexes = async () => {
       const seenIndexes = await axios.get('/api/values/all');
-      setState((state) => ({ ...state, seenIndexes: seenIndexes.data }));
+      setSeenIndexes(seenIndexes.data);
     };
     fetchIndexes();
   }, []);
@@ -29,17 +25,17 @@ const Fib = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     await axios.post('/api/values', { index });
-    setState((state) => ({ ...state, index: '' }));
+    setIndex('');
   };
 
-  const handleOnChange = (event) => setState((state) => ({ ...state, index: event.target.value }));
+  const handleChangeIndex = (event) => setIndex(event.target.value);
 
   const renderSeenIndexes = () => seenIndexes.map(({ number }) => number).join(', ');
 
   const renderValues = () =>
     Object.entries(values).map(([key, value]) => (
       <div key={key}>
-        For index {key} I calculated {value}
+        For index {key}, I calculated: {value}
       </div>
     ));
 
@@ -47,7 +43,7 @@ const Fib = () => {
     <div>
       <form onSubmit={handleSubmit}>
         <label>Enter your index:</label>
-        <input value={index} onChange={handleOnChange} />
+        <input value={index} onChange={handleChangeIndex} />
         <button>Submit</button>
       </form>
 

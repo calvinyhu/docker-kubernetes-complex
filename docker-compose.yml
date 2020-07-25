@@ -10,6 +10,9 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile.dev
+    depends_on:
+      - api
+      - client
     ports:
       - 3050:80
     restart: always
@@ -17,6 +20,9 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile.dev
+    depends_on:
+      - postgres
+      - redis
     environment:
       REDIS_HOST: redis # name of the service in this docker-compose file
       REDIS_PORT: 6379 # extracted from docker hub redis image Dockerfile
@@ -32,6 +38,8 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile.dev
+    depends_on:
+      - api
     stdin_open: true
     volumes:
       - /app/node_modules
