@@ -1,12 +1,19 @@
 version: '3'
 services:
   postgres:
-    image: postgres:12-alpine
     environment:
       POSTGRES_PASSWORD: password
+    image: postgres:12-alpine
   redis:
     image: redis:6-alpine
-  server:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3050:80
+    restart: always
+  api:
     build:
       context: ./server
       dockerfile: Dockerfile.dev
@@ -25,6 +32,7 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile.dev
+    stdin_open: true
     volumes:
       - /app/node_modules
       - ./client:/app
