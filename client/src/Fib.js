@@ -6,26 +6,28 @@ const Fib = () => {
   const [seenIndexes, setSeenIndexes] = useState([]);
   const [values, setValues] = useState({});
 
-  useEffect(() => {
-    const fetchValues = async () => {
-      const values = await axios.get('/api/values/current');
-      setValues(values.data);
-    };
-    fetchValues();
-  }, []);
+  const fetchIndexes = async () => {
+    const seenIndexes = await axios.get('/api/values/all');
+    setSeenIndexes(seenIndexes.data);
+  };
+
+  const fetchValues = async () => {
+    const values = await axios.get('/api/values/current');
+    setValues(values.data);
+  };
 
   useEffect(() => {
-    const fetchIndexes = async () => {
-      const seenIndexes = await axios.get('/api/values/all');
-      setSeenIndexes(seenIndexes.data);
-    };
     fetchIndexes();
+    fetchValues();
   }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!index) return;
     await axios.post('/api/values', { index });
     setIndex('');
+    fetchIndexes();
+    fetchValues();
   };
 
   const handleChangeIndex = (event) => setIndex(event.target.value);
