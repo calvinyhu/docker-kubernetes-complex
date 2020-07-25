@@ -14,3 +14,4 @@ after_success:
   - docker build -t calvinyhu/docker-kubernetes-complex-nginx ./nginx
   - docker build -t calvinyhu/docker-kubernetes-complex-server ./server
   - docker build -t calvinyhu/docker-kubernetes-complex-worker ./worker
+
