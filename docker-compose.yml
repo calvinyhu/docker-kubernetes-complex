@@ -22,7 +22,7 @@ services:
       dockerfile: Dockerfile.dev
     depends_on:
       - postgres
-      - redis
+      - worker
     environment:
       REDIS_HOST: redis # name of the service in this docker-compose file
       REDIS_PORT: 6379 # extracted from docker hub redis image Dockerfile
@@ -48,6 +48,11 @@ services:
     build:
       context: ./worker
       dockerfile: Dockerfile.dev
+    depends_on:
+      - redis
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     volumes:
       - /app/node_modules
       - ./worker:/app
