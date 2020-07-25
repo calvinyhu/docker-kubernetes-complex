@@ -1,0 +1,22 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t calvinyhu/docker-kubernetes -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true calvinyhu/docker-kubernetes npm t
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-1
+  app: docker-react
+  env: docker
+  bucket_name: elasticbeanstalk-us-east-1-977744602869  # S3 Bucket
+  bucket_path: docker-react
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
