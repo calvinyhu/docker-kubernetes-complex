@@ -23,3 +23,15 @@ after_success:
   - docker push calvinyhu/docker-kubernetes-complex-nginx
   - docker push calvinyhu/docker-kubernetes-complex-server
   - docker push calvinyhu/docker-kubernetes-complex-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-1
+  app: docker-app
+  env: docker-app-env
+  bucket_name: elasticbeanstalk-us-east-1-977744602869  # S3 Bucket
+  bucket_path: docker-complex-bucket
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
