@@ -10,8 +10,16 @@ script:
   - docker run -e CI=true calvinyhu/docker-kubernetes-complex-client npm t
 
 after_success:
+  # Build production images
   - docker build -t calvinyhu/docker-kubernetes-complex-client ./client
   - docker build -t calvinyhu/docker-kubernetes-complex-nginx ./nginx
   - docker build -t calvinyhu/docker-kubernetes-complex-server ./server
   - docker build -t calvinyhu/docker-kubernetes-complex-worker ./worker
-
+  # Log in to a Docker registry using the Docker CLI.
+  # Using STDIN prevents the password from ending up in the shell’s history, or log-files.
+  - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_ID" --password-stdin
+  # Push built production images to Docker hub
+  - docker push calvinyhu/docker-kubernetes-complex-client
+  - docker push calvinyhu/docker-kubernetes-complex-nginx
+  - docker push calvinyhu/docker-kubernetes-complex-server
+  - docker push calvinyhu/docker-kubernetes-complex-worker
