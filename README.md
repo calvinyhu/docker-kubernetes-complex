@@ -2,7 +2,7 @@
 
 Workspace for Udemy
 
-# Notes
+## Notes
 
 ```json
 {
@@ -15,4 +15,10 @@ Workspace for Udemy
     }
   ]
 }
+```
+
+Add a secret imperatively to Kubernetes.
+
+```bash
+kubectl create secret generic <secret_name> --from-literal <key=value>
 ```
