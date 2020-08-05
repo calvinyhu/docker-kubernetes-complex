@@ -15,6 +15,11 @@ spec:
       containers:
         - name: worker
           image: calvinyhu/docker-kubernetes-complex-worker
+          env:
+            - name: REDIS_HOST
+              value: redis-cluster-ip-service
+            - name: REDIS_PORT
+              value: "6379"
           # No ports required since no other objects in the cluster are going to need access to the worker
           # The worker only needs access to the redis container
           # Therefore, no service config is required for the worker deployment

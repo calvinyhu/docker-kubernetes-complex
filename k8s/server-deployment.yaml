@@ -17,3 +17,21 @@ spec:
           image: calvinyhu/docker-kubernetes-complex-server
           ports:
             - containerPort: 5000
+          env:
+            - name: REDIS_HOST
+              value: redis-cluster-ip-service # name of the redis service
+            - name: REDIS_PORT
+              value: "6379"
+            - name: PG_USER
+              value: postgres
+            - name: PG_HOST
+              value: postgres-cluster-ip-service # name of pg service
+            - name: PG_PORT
+              value: "5432"
+            - name: PG_DATABASE
+              value: postgres
+            - name: PG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-password
+                  key: PG_PASSWORD

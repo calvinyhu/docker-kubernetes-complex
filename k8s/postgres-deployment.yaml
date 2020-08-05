@@ -25,3 +25,9 @@ spec:
             - name: postgres-storage # identical to volumes -> name
               mountPath: /var/lib/postgresql/data # default location that Postgres uses for storage
               subPath: postgres # very specific for postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-password
+                  key: PG_PASSWORD
