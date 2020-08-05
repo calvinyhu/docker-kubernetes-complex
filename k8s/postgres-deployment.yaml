@@ -12,8 +12,16 @@ spec:
       labels:
         component: postgres
     spec:
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: database-persistent-volume-claim # Allows pod to get persistent storage locally or remotely (like from GCP) that has the configuration in the specified claim configuration
       containers:
         - name: postgres
           image: postgres
           ports:
             - containerPort: 5432
+          volumeMounts:
+            - name: postgres-storage # identical to volumes -> name
+              mountPath: /var/lib/postgresql/data # default location that Postgres uses for storage
+              subPath: postgres # very specific for postgres
