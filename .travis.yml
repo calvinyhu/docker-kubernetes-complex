@@ -1,0 +1,41 @@
+sudo: required
+services:
+  - docker
+env:
+  global:
+    # Used to have unique tags for the production docker images
+    - SHA=$(git rev-parse HEAD)
+    # Disable gcloud prompts
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+before_install:
+  # Add encrypted service account file generated in Google Cloud IAM & Admin
+  - openssl aes-256-cbc -K $encrypted_9f3b5599b056_key -iv $encrypted_9f3b5599b056_iv -in service-account.json.enc -out service-account.json -d
+  # Install Google Cloud CLI
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  # Install and update kubectl
+  - gcloud components update kubectl
+  # Setup auth. Tells the CLI who we are in order to allow access to Google Cloud. Equivalent to the IAM user in AWS
+  # service-account.json is generated in Google Cloud when a Service Account is created
+  # Download this json file, encrypt it, and upload it to Travis
+  - gcloud auth activate-service-account --key-file service-account.json
+  # Set the project id from Google Cloud
+  - gcloud config set project multi-k8s-285603
+  # Set the Kubernetes cluster location
+  - gcloud config set compute/zone us-west1-a
+  # Set the cluster name
+  - gcloud container clusters get-credentials multi-cluster
+  # Log into Docker
+  - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_ID" --password-stdin
+  # build docker image
+  - docker build -t calvinyhu/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  # Run tests in the built image
+  - docker run -e CI=true calvinyhu/react-test npm test
+
+deploy:
+  provider: script
+  script: bash ./deploy.sh
+  on:
+    branch: master
